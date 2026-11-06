@@ -1,34 +1,22 @@
-# CFSM-Theme-AnotherLuminaPlus
+最新完整固定链接是：
 
-[CF-Server-Monitor](https://github.com/huilang-me/CF-Server-Monitor) 的第三方主题。
+Text
+https://github.com/shmily377/CFSM-Theme-AnotherLuminaPlus/tree/2a0f557665b7c3efc05082b2598d696f653197f3
+也可以使用会自动跟随更新的链接：
 
-它站在三个项目的肩膀上：功能骨架来自 **[Komari-Theme-LuminaPlus](https://github.com/shanyang242/Komari-Theme-LuminaPlus)**，
-由 **[CFSM-Theme-LuminaPlus](https://github.com/volcano-1025/CFSM-Theme-LuminaPlus)** 移植到 CF-Server-Monitor，
-本主题在它的基础上二次修改，并把 **[CFSM-SAO](https://github.com/WAOR/CFSM-SAO)** 的界面样式、配色与动效融合进来。
-一句话：**LuminaPlus 的功能 + SAO 的外观**。
+Text
+https://github.com/shmily377/CFSM-Theme-AnotherLuminaPlus/tree/dist
+自己查询位置：
 
-<p align="center">
-  <img src="docs/preview.png" alt="AnotherLuminaPlus 预览" width="100%">
-</p>
+打开仓库 → Branches → 进入 dist 分支；
+查看最新提交的 Commit SHA；
+把 SHA 拼到：
+Text
+https://github.com/shmily377/CFSM-Theme-AnotherLuminaPlus/tree/这里填写SHA
+版本号则在仓库 main 分支的 package.json 里查看 version 字段。
 
-## 💖 致谢
 
-这个主题绝大部分的价值来自下面几位作者的开源工作，没有他们就没有 AnotherLuminaPlus。
 
-- **[volcano-1025](https://github.com/volcano-1025) · [CFSM-Theme-LuminaPlus](https://github.com/volcano-1025/CFSM-Theme-LuminaPlus)**
-  本主题直接 fork 自这里。是 volcano 把 LuminaPlus 完整移植到了 CF-Server-Monitor：整套数据层改走后端公开 API、
-  WebSocket 实时推送与轮询兜底、首页延迟 / 丢包柱子的取数与校正、多线路与线路改名、主题设置自动同步到后端、
-  产物分支与主题商店的发布流程…… 本仓库的大部分代码和这份文档的大部分内容都出自 volcano 之手。
-- **[WAOR](https://github.com/WAOR) · [CFSM-SAO](https://github.com/WAOR/CFSM-SAO)**
-  本主题的「脸」来自 SAO：首页的问候语与六宫格指标总览、服务器集群状态区、卡片与页脚胶囊的样式、
-  配色风格与开屏动效、设置页版式、资产悬浮入口、延迟 / 丢包 / 流量色谱自定义，都是 WAOR 的设计与实现。
-- **codex & shark & shanyang · [Komari-Theme-LuminaPlus](https://github.com/shanyang242/Komari-Theme-LuminaPlus)**
-  LuminaPlus 的原作者。大 / 小 / 迷你 / 列表四种卡片、首页总览与分组筛选、资产统计、详情页图表这些功能和交互的
-  最初设计都来自这里；LuminaPlus 本身又是 [stqfdyr](https://github.com/stqfdyr) 的
-  [komari-theme-Lumina](https://github.com/stqfdyr/komari-theme-Lumina) 的增强分支，一并致谢。
-
-也感谢 [huilang-me](https://github.com/huilang-me) 的 [CF-Server-Monitor](https://github.com/huilang-me/CF-Server-Monitor)
-提供后端与主题商店。以上项目均为 MIT 许可，版权声明见 [LICENSE](LICENSE)。
 
 ## 有什么
 
