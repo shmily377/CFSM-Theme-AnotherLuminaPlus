@@ -155,7 +155,7 @@ export function PingChart({
    */
   const [selectedTasks, setSelectedTasks] = useState<ReadonlySet<number>>(EMPTY_TASK_IDS);
   const [cutPeak, setCutPeak] = useState(false);
-  const [showLossArea, setShowLossArea] = useState(true);
+  const [showLossArea, setShowLossArea] = useState(false);
   const chartRef = useRef<uPlot.AlignedData>([[]]);
   // tooltip 的 buildRows 只拿得到点位下标，丢包值走 ref 与图表数据同步。
   const lossRef = useRef<Array<Array<number | null>>>([]);
