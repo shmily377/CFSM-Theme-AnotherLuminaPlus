@@ -40,6 +40,7 @@ import { resolvePingSampleCounts } from "@/utils/pingMetrics";
 import {
   invertHomepagePingTaskBindings,
   resolveDefaultHomepagePingTaskId,
+  resolveHomepageMultiPingTaskIds,
   isHomepageMultiPingConfigured,
 } from "@/utils/pingTasks";
 import type { NodeViewMode } from "@/utils/themeSettings";
@@ -379,16 +380,25 @@ export function useAllPingLineOverrides(): PingLineOverridesByNode {
  * 条数仍由站点设置决定，只能换、不能加减。
  */
 export function useNodeMultiPingTaskIds(uuid: string): readonly number[] {
-  const { homepageMultiPingTaskIds, homepagePingLineOverrides } = useThemeSettings();
+  const {
+    homepageMultiPingTaskIds,
+    homepageMultiPingTaskIdsByNode,
+    homepagePingLineOverrides,
+  } = useThemeSettings();
   const siteOverrides = nodePingLineOverrides(homepagePingLineOverrides, uuid);
   const localOverrides = useNodePingLineOverrides(uuid);
+  const nodeTaskIds = resolveHomepageMultiPingTaskIds(
+    homepageMultiPingTaskIds,
+    homepageMultiPingTaskIdsByNode,
+    uuid,
+  );
   return useMemo(
     () =>
       resolveNodePingLineTaskIds(
-        resolveNodePingLineTaskIds(homepageMultiPingTaskIds, siteOverrides),
+        resolveNodePingLineTaskIds(nodeTaskIds, siteOverrides),
         localOverrides,
       ),
-    [homepageMultiPingTaskIds, localOverrides, siteOverrides],
+    [localOverrides, nodeTaskIds, siteOverrides],
   );
 }
 

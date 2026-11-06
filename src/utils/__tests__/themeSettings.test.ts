@@ -59,6 +59,18 @@ describe("normalizeThemeSettings", () => {
     expect(resolved.homepageMultiPingTaskIds).toEqual([3, 1, 2, 4]);
   });
 
+  it("normalizes per-node multi-ping overrides without affecting the global default", () => {
+    const settings = normalizeThemeSettings({
+      homepageMultiPingTaskIds: [1, 2, 3],
+      homepageMultiPingTaskIdsByNode: {
+        "node-a": [3, 1, 3],
+        "node-b": [],
+      },
+    });
+    expect(settings.homepageMultiPingTaskIds).toEqual([1, 2, 3]);
+    expect(settings.homepageMultiPingTaskIdsByNode).toEqual({ "node-a": [3, 1] });
+  });
+
   it("defaults home sort to weight ascending and falls back to a field's natural direction", () => {
     const base = normalizeThemeSettings({});
     expect(base.enableHomeSort).toBe(true);

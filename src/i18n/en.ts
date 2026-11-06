@@ -719,6 +719,12 @@ export const EN: Record<string, string> = {
     "Dots: one colored cell per time slot. Line: smooth curves colored by the current latency and packet loss (in multi-route mode, loss is shown as a number). Applies to large, small and mini cards and to the list.",
   "多线槽位": "Route slots",
   "卡片将依序展示各线路的实时延迟光柱。": "Cards show live latency bars for each route in order.",
+  "按节点单独设置": "Per-node settings",
+  "默认跟随上面的统一线路；取消某条线路即可避免该节点显示不适用的延迟和丢包。":
+    "Nodes follow the unified routes by default. Uncheck a route to hide latency and loss that do not apply to that node.",
+  "跟随统一设置": "Follow unified settings",
+  "已单独设置：{n} 条线路": "Custom setting: {n} routes",
+  "当前跟随统一设置：{n} 条线路": "Following unified settings: {n} routes",
   "+ 添加展示线路": "+ Add route",
   "槽位 #{n}": "Slot #{n}",
   "未单独指派线路的服务器均显示此线路数据。": "Servers without an assigned route show this route.",

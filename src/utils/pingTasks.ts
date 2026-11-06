@@ -66,6 +66,33 @@ export function normalizeHomepageMultiPingTaskIds(value: unknown): number[] {
 }
 
 /**
+ * 逐节点多线路覆盖。空数组和非法节点键会被丢弃；未列出的节点跟随全局线路。
+ */
+export function normalizeHomepageMultiPingTaskIdsByNode(
+  value: unknown,
+): Record<string, number[]> {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return {};
+
+  const normalized: Record<string, number[]> = {};
+  for (const [uuid, taskIds] of Object.entries(value)) {
+    if (!uuid || uuid === "__proto__" || uuid === "constructor" || uuid === "prototype") {
+      continue;
+    }
+    const next = normalizeHomepageMultiPingTaskIds(taskIds);
+    if (next.length > 0) normalized[uuid] = next;
+  }
+  return normalized;
+}
+
+export function resolveHomepageMultiPingTaskIds(
+  globalTaskIds: readonly number[],
+  byNode: Record<string, number[]>,
+  uuid: string,
+): readonly number[] {
+  return byNode[uuid] ?? globalTaskIds;
+}
+
+/**
  * 把多线路的第 `slot` 条换成 `taskId`。选的线路已经在别的槽位时**两条互换**，不会选出两条一样的线路
  * —— 和首页卡片上点线路名换线路同一个口径（见 pingLineOverrides 的 `switchPingLine`）。
  * 槽位越界时原样返回（拷贝）。

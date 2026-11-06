@@ -7,6 +7,8 @@ import {
   resolveDefaultHomepagePingTaskId,
   isHomepageMultiPingConfigured,
   normalizeHomepageMultiPingTaskIds,
+  normalizeHomepageMultiPingTaskIdsByNode,
+  resolveHomepageMultiPingTaskIds,
   invertHomepagePingTaskBindings,
   hasHomepagePingTaskBinding,
   normalizeHomepagePingTaskBindings,
@@ -69,6 +71,18 @@ describe("homepage ping task bindings", () => {
     expect(normalizeHomepageMultiPingTaskIds([8, 7, 6, 5, 4, 3, 2, 1, 9])).toEqual([
       8, 7, 6, 5, 4, 3, 2, 1,
     ]);
+  });
+
+  it("normalizes per-node overrides and falls back to the global selection", () => {
+    const byNode = normalizeHomepageMultiPingTaskIdsByNode({
+      "node-a": [3, 1, 3],
+      "node-b": [],
+      "__proto__": [8],
+      "constructor": [7],
+    });
+    expect(byNode).toEqual({ "node-a": [3, 1] });
+    expect(resolveHomepageMultiPingTaskIds([1, 2, 3], byNode, "node-a")).toEqual([3, 1]);
+    expect(resolveHomepageMultiPingTaskIds([1, 2, 3], byNode, "node-b")).toEqual([1, 2, 3]);
   });
 
   it("swaps two slots when the picked line is already used by another slot", () => {

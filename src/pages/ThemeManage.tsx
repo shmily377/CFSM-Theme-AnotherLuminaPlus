@@ -123,6 +123,7 @@ import {
   assignHomepageMultiPingTask,
   isHomepageMultiPingConfigured,
   normalizeHomepageMultiPingTaskIds,
+  normalizeHomepageMultiPingTaskIdsByNode,
   normalizeHomepagePingTaskBindings,
   type HomepagePingTaskBindings,
 } from "@/utils/pingTasks";
@@ -421,6 +422,7 @@ function pickManagedThemeSettings(settings: ResolvedThemeSettings) {
     homepageDefaultPingTaskId: settings.homepageDefaultPingTaskId,
     enableHomepageMultiPing: settings.enableHomepageMultiPing,
     homepageMultiPingTaskIds: settings.homepageMultiPingTaskIds,
+    homepageMultiPingTaskIdsByNode: settings.homepageMultiPingTaskIdsByNode,
     homepagePingStyle: settings.homepagePingStyle,
     fakePingForUnbound: settings.fakePingForUnbound,
     pingLatencyThresholds: normalizePingLatencyThresholds(settings.pingLatencyThresholds),
@@ -1321,6 +1323,60 @@ export function ThemeManage() {
     });
   }, [commitMultiPingTaskIds]);
 
+  const setNodeMultiPingTaskIds = useCallback(
+    (uuid: string, taskIds: number[]) => {
+      editVersionRef.current += 1;
+      setDraft((prev) => {
+        const normalized = normalizeHomepageMultiPingTaskIds(taskIds);
+        const nextByNode = { ...prev.homepageMultiPingTaskIdsByNode };
+        if (
+          normalized.length === prev.homepageMultiPingTaskIds.length &&
+          normalized.every((taskId, index) => taskId === prev.homepageMultiPingTaskIds[index])
+        ) {
+          delete nextByNode[uuid];
+        } else if (normalized.length > 0) {
+          nextByNode[uuid] = normalized;
+        } else {
+          delete nextByNode[uuid];
+        }
+        return {
+          ...prev,
+          homepageMultiPingTaskIdsByNode: normalizeHomepageMultiPingTaskIdsByNode(nextByNode),
+        };
+      });
+    },
+    [],
+  );
+
+  const toggleNodeMultiPingTask = useCallback(
+    (uuid: string, taskId: number) => {
+      const current =
+        draft.homepageMultiPingTaskIdsByNode[uuid] ?? draft.homepageMultiPingTaskIds;
+      if (current.includes(taskId)) {
+        if (current.length <= HOMEPAGE_MULTI_PING_MIN_COUNT) return;
+        setNodeMultiPingTaskIds(uuid, current.filter((id) => id !== taskId));
+      } else {
+        setNodeMultiPingTaskIds(uuid, [...current, taskId]);
+      }
+    },
+    [draft.homepageMultiPingTaskIds, draft.homepageMultiPingTaskIdsByNode, setNodeMultiPingTaskIds],
+  );
+
+  const resetNodeMultiPingTasks = useCallback(
+    (uuid: string) => {
+      editVersionRef.current += 1;
+      setDraft((prev) => {
+        if (!Object.prototype.hasOwnProperty.call(prev.homepageMultiPingTaskIdsByNode, uuid)) {
+          return prev;
+        }
+        const nextByNode = { ...prev.homepageMultiPingTaskIdsByNode };
+        delete nextByNode[uuid];
+        return { ...prev, homepageMultiPingTaskIdsByNode: nextByNode };
+      });
+    },
+    [],
+  );
+
   const pingTasks = useMemo(() => carrierPingTasks(carrierNames), [carrierNames]);
 
   const {
@@ -1879,6 +1935,79 @@ export function ThemeManage() {
                         onPatch={patch}
                       />
                     </div>
+
+                    {sortedClients.length > 0 && (
+                      <div className="mt-2 flex flex-col gap-3 border-t border-(--hairline) pt-4">
+                        <div>
+                          <span className="setting-subhead-title">{t("按节点单独设置")}</span>
+                          <p className="setting-hint mt-1">
+                            {t("默认跟随上面的统一线路；取消某条线路即可避免该节点显示不适用的延迟和丢包。")}
+                          </p>
+                        </div>
+                        <div className="flex flex-col gap-2">
+                          {sortedClients.map((client) => {
+                            const override =
+                              draft.homepageMultiPingTaskIdsByNode[client.uuid];
+                            const selected =
+                              override ?? draft.homepageMultiPingTaskIds;
+                            const isOverride = override != null;
+                            return (
+                              <div
+                                key={client.uuid}
+                                className="rounded-[10px] border border-(--hairline) px-3 py-3"
+                              >
+                                <div className="flex flex-wrap items-center justify-between gap-2">
+                                  <div className="min-w-0">
+                                    <div className="truncate text-[13px] font-medium text-(--text-primary)">
+                                      {client.name || client.uuid}
+                                    </div>
+                                    <div className="truncate text-[11px] text-(--text-tertiary)">
+                                      {client.uuid}
+                                    </div>
+                                  </div>
+                                  {isOverride && (
+                                    <button
+                                      type="button"
+                                      className="theme-manage-button is-compact"
+                                      onClick={() => resetNodeMultiPingTasks(client.uuid)}
+                                    >
+                                      {t("跟随统一设置")}
+                                    </button>
+                                  )}
+                                </div>
+                                <div className="mt-2 flex flex-wrap gap-x-4 gap-y-2">
+                                  {sortedTasks.map((task) => (
+                                    <label
+                                      key={task.id}
+                                      className="flex items-center gap-1.5 text-[12px] text-(--text-secondary)"
+                                    >
+                                      <input
+                                        type="checkbox"
+                                        checked={selected.includes(task.id)}
+                                        disabled={
+                                          selected.includes(task.id) &&
+                                          selected.length <= HOMEPAGE_MULTI_PING_MIN_COUNT
+                                        }
+                                        onChange={() =>
+                                          toggleNodeMultiPingTask(client.uuid, task.id)
+                                        }
+                                        className="h-3.5 w-3.5 accent-(--accent-500)"
+                                      />
+                                      {task.name || t("线路 #{id}", { id: task.id })}
+                                    </label>
+                                  ))}
+                                </div>
+                                <div className="mt-2 text-[11px] text-(--text-tertiary)">
+                                  {isOverride
+                                    ? t("已单独设置：{n} 条线路", { n: selected.length })
+                                    : t("当前跟随统一设置：{n} 条线路", { n: selected.length })}
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   <div className="border-t border-(--border-subtle) pt-3">

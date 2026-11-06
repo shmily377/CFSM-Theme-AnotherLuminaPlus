@@ -33,6 +33,7 @@ import {
   DEFAULT_HOMEPAGE_PING_TASK_ID,
   resolveDefaultHomepagePingTaskId,
   normalizeHomepageMultiPingTaskIds,
+  normalizeHomepageMultiPingTaskIdsByNode,
   normalizeHomepagePingTaskBindings,
   type HomepagePingTaskBindings,
 } from "@/utils/pingTasks";
@@ -192,6 +193,7 @@ export interface ResolvedThemeSettings {
   homepageDefaultPingTaskId: number;
   enableHomepageMultiPing: boolean;
   homepageMultiPingTaskIds: number[];
+  homepageMultiPingTaskIdsByNode: Record<string, number[]>;
   /** 首页延迟的图形：点阵或曲线（见 HomepagePingStyle）。 */
   homepagePingStyle: HomepagePingStyle;
   homepagePingLineOverrides: PingLineOverridesByNode;
@@ -263,6 +265,7 @@ export const DEFAULT_THEME_SETTINGS: ResolvedThemeSettings = {
   homepageDefaultPingTaskId: DEFAULT_HOMEPAGE_PING_TASK_ID,
   enableHomepageMultiPing: true,
   homepageMultiPingTaskIds: [...DEFAULT_HOMEPAGE_MULTI_PING_TASK_IDS],
+  homepageMultiPingTaskIdsByNode: {},
   homepagePingStyle: "bars",
   homepagePingLineOverrides: EMPTY_PING_LINE_OVERRIDES_BY_NODE,
   fakePingForUnbound: false,
@@ -556,6 +559,9 @@ export function normalizeThemeSettings(
     settings?.homepageMultiPingTaskIds == null
       ? [...DEFAULT_HOMEPAGE_MULTI_PING_TASK_IDS]
       : normalizeHomepageMultiPingTaskIds(settings.homepageMultiPingTaskIds);
+  const homepageMultiPingTaskIdsByNode = normalizeHomepageMultiPingTaskIdsByNode(
+    settings?.homepageMultiPingTaskIdsByNode,
+  );
   return {
     defaultAppearance: normalizeAppearance(settings?.defaultAppearance),
     desktopNodeViewMode: normalizeNodeViewMode(
@@ -581,6 +587,7 @@ export function normalizeThemeSettings(
     ),
     enableHomepageMultiPing: enabledUnlessFalse(settings?.enableHomepageMultiPing),
     homepageMultiPingTaskIds,
+    homepageMultiPingTaskIdsByNode,
     homepagePingStyle: settings?.homepagePingStyle === "line" ? "line" : "bars",
     homepagePingLineOverrides: normalizePingLineOverridesByNode(settings?.homepagePingLineOverrides),
     fakePingForUnbound: settings?.fakePingForUnbound === true,

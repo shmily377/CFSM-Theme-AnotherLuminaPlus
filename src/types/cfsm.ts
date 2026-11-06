@@ -556,6 +556,8 @@ export interface ThemeSettings {
   homepageDefaultPingTaskId?: number;
   enableHomepageMultiPing?: boolean;
   homepageMultiPingTaskIds?: number[];
+  /** 首页多线路的逐节点覆盖；未列出的节点跟随 homepageMultiPingTaskIds。 */
+  homepageMultiPingTaskIdsByNode?: Record<string, number[]>;
   /** 首页延迟的图形：点阵（bars，默认）或曲线（line）。 */
   homepagePingStyle?: HomepagePingStyle;
   /** 站长在卡片上换好、「保存到后端」写上来的逐节点换线：`{ uuid: { 行号: 线路 id } }`。 */
