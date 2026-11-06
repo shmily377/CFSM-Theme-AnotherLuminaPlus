@@ -1,18 +1,20 @@
 最新完整固定链接是：
 
-Text
+```
 https://github.com/shmily377/CFSM-Theme-AnotherLuminaPlus/tree/2a0f557665b7c3efc05082b2598d696f653197f3
+```
 也可以使用会自动跟随更新的链接：
-
-Text
+```
 https://github.com/shmily377/CFSM-Theme-AnotherLuminaPlus/tree/dist
+```
 自己查询位置：
 
 打开仓库 → Branches → 进入 dist 分支；
 查看最新提交的 Commit SHA；
 把 SHA 拼到：
-Text
+```
 https://github.com/shmily377/CFSM-Theme-AnotherLuminaPlus/tree/这里填写SHA
+```
 版本号则在仓库 main 分支的 package.json 里查看 version 字段。
 
 
